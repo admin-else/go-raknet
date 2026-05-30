@@ -73,6 +73,10 @@ type Listener struct {
 	// pongData is a byte slice of data that is sent in an unconnected pong
 	// packet each time the client sends and unconnected ping to the server.
 	pongData atomic.Pointer[[]byte]
+
+	// pongDataF is a function that returns the data that is sent in an unconnected pong
+	// it will be called if pongData is nil
+	pongDataF PongDataF
 }
 
 // listenerID holds the next ID to use for a Listener.
@@ -173,6 +177,14 @@ func (listener *Listener) PongData(data []byte) {
 		panic(fmt.Sprintf("pong data: must be no longer than %v bytes, got %v", math.MaxInt16, len(data)))
 	}
 	listener.pongData.Store(&data)
+}
+
+type PongDataF func(addr net.Addr) []byte
+
+// PongDataFunc sets a function to generate pong data dynamically when responding to unconnected pings.
+// It will be called if PongData len is 0
+func (listener *Listener) PongDataFunc(f PongDataF) {
+	listener.pongDataF = f
 }
 
 // ID returns the unique ID of the listener. This ID is usually used by a
