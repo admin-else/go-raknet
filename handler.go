@@ -88,7 +88,7 @@ func (h listenerConnectionHandler) handleUnconnectedPing(b []byte, addr net.Addr
 		return fmt.Errorf("read UNCONNECTED_PING: %w", err)
 	}
 	pongData := *h.l.pongData.Load()
-	if len(pongData) == 0 {
+	if len(pongData) == 0 && h.l.pongDataF != nil {
 		pongData = h.l.pongDataF(addr)
 		if len(pongData) > math.MaxInt16 {
 			panic(fmt.Sprintf("pong data function result: must be no longer than %v bytes, got %v", math.MaxInt16, len(pongData)))
