@@ -75,7 +75,7 @@ type Listener struct {
 	pongData atomic.Pointer[[]byte]
 
 	// pongDataFunc is a function that returns the data that is sent in an unconnected pong
-	// it will be called if pongData is nil
+	// it will be called if pongData is nil.
 	pongDataFunc pongDataFunc
 }
 
