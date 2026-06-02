@@ -76,7 +76,7 @@ type Listener struct {
 
 	// pongDataFunc is a function that returns the data that is sent in an unconnected pong
 	// it will be called if pongData is nil.
-	pongDataFunc pongDataFunc
+	pongDataFunc atomic.Pointer[pongDataFunc]
 }
 
 // listenerID holds the next ID to use for a Listener.
@@ -185,7 +185,7 @@ type pongDataFunc func(addr net.Addr) []byte
 // This function will take priority over the static pong data, unless it is set back to nil. The data
 // returned should not be bigger than math.MaxInt16.
 func (listener *Listener) PongDataFunc(f pongDataFunc) {
-	listener.pongDataFunc = f
+	listener.pongDataFunc.Store(&f)
 }
 
 // ID returns the unique ID of the listener. This ID is usually used by a
