@@ -181,10 +181,9 @@ func (listener *Listener) PongData(data []byte) {
 
 type pongDataFunc func(addr net.Addr) []byte
 
-// PongDataFunc sets a function to generate pong data dynamically when responding to unconnected pings.
-// It will be called if PongData len is 0
-// It should not return a data slice with a size bigger than math.MaxInt16.
-// It should also not be set during execution of the listener since it lacks atomic.Pointer.
+// PongDataFunc sets a function to generate pong data dynamically when responding to an unconnected ping.
+// This function will take priority over the static pong data, unless it is set back to nil. The data
+// returned should not be bigger than math.MaxInt16.
 func (listener *Listener) PongDataFunc(f pongDataFunc) {
 	listener.pongDataFunc = f
 }
