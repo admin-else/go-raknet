@@ -185,7 +185,11 @@ type pongDataFunc func(addr net.Addr) []byte
 // This function will take priority over the static pong data, unless it is set back to nil. The data
 // returned should not be bigger than math.MaxInt16.
 func (listener *Listener) PongDataFunc(f pongDataFunc) {
-	listener.pongDataFunc.Store(&f)
+	if f == nil {
+		listener.pongDataFunc.Store(nil)
+	} else {
+		listener.pongDataFunc.Store(&f)
+	}
 }
 
 // ID returns the unique ID of the listener. This ID is usually used by a
