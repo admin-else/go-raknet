@@ -91,7 +91,7 @@ func (h listenerConnectionHandler) handleUnconnectedPing(b []byte, addr net.Addr
 	if len(pongData) == 0 && h.l.pongDataFunc != nil {
 		pongData = h.l.pongDataFunc(addr)
 		if len(pongData) > math.MaxInt16 {
-			panic(fmt.Sprintf("pong data function result: must be no longer than %v bytes, got %v", math.MaxInt16, len(pongData)))
+			return fmt.Errorf("pong data function result: must be no longer than %v bytes, got %v", math.MaxInt16, len(pongData))
 		}
 	}
 	data, _ := (&message.UnconnectedPong{ServerGUID: h.l.id, PingTime: pk.PingTime, Data: pongData}).MarshalBinary()
